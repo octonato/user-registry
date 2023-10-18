@@ -17,9 +17,10 @@
 
     <!-- TODO Update to your own Docker repository or Docker Hub scope -->
     <dockerImage>my-docker-repo/${project.artifactId}</dockerImage>
+    <!--suppress UnresolvedMavenProperty -->
     <dockerTag>${project.version}-${build.timestamp}</dockerTag>
     <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-    <mainClass>users.registry.Main</mainClass>
+    <mainClass>user.registry.Main</mainClass>
 
     <jdk.target>17</jdk.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -253,6 +254,12 @@
       <artifactId>kalix-spring-boot-starter-test</artifactId>
       <version>${kalix-sdk.version}</version>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.vavr</groupId>
+      <artifactId>vavr</artifactId>
+      <version>0.10.4</version>
     </dependency>
 
     <dependency>

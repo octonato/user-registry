@@ -1,4 +1,4 @@
-package users.registry;
+package user.registry;
 
 import kalix.javasdk.annotations.Acl;
 import org.slf4j.Logger;
