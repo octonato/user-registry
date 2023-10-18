@@ -16,13 +16,13 @@ public class UserEntityComponentTest {
 
     var creationRes = userTestKit.call(userService -> userService.createUser(new User.Create("John", "john@acme.com")));
 
-    var created = creationRes.getNextEventOfType(User.Created.class);
+    var created = creationRes.getNextEventOfType(User.UserWasCreated.class);
     assertEquals("John", created.name());
     assertEquals("john@acme.com", created.email());
 
     var updateRes = userTestKit.call(userService -> userService.changeEmail(new User.ChangeEmail("john.doe@acme.com")));
-    var emailChanged = updateRes.getNextEventOfType(User.EmailChanged.class);
-    assertEquals("john.doe@acme.com", emailChanged.email());
+    var emailChanged = updateRes.getNextEventOfType(User.UsersEmailChanged.class);
+    assertEquals("john.doe@acme.com", emailChanged.newEmail());
   }
 
   @Test
