@@ -1,0 +1,44 @@
+### get user 001
+GET localhost:9000/api/users/001
+
+### get user 002
+GET localhost:9000/api/users/002
+
+### create user 001
+POST localhost:9000/api/users/001
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "country": "Belgium",
+  "email": "doe@acme.com"
+}
+
+### change email 001
+PUT localhost:9000/api/users/001/change-email
+Content-Type: application/json
+
+{
+  "newEmail": "john.doe@acme.com"
+}
+
+
+### create user 002
+POST localhost:9000/api/users/002
+Content-Type: application/json
+
+{
+  "name": "Anne Doe",
+  "country": "Belgium",
+  "email": "doe@acme.com"
+}
+
+### doe@acme info
+GET localhost:9000/api/emails/doe@acme.com
+
+### john.doe@acme info
+GET localhost:9000/api/emails/john.doe@acme.com
+
+
+### get by country
+GET localhost:9000/users/by-country/Belgium

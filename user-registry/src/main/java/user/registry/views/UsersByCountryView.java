@@ -10,10 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import reactor.core.publisher.Flux;
-import user.registry.components.UserEntityComponent;
+import user.registry.components.entities.UserEntityComponent;
 import user.registry.domain.User;
 
-@ViewId("view-users-by-country")
+@ViewId("view-users-by-newCountry")
 @Table("users_by_country")
 @Subscribe.EventSourcedEntity(UserEntityComponent.class)
 public class UsersByCountryView extends View<UsersByCountryView.UserView> {
@@ -43,7 +43,7 @@ public class UsersByCountryView extends View<UsersByCountryView.UserView> {
   }
 
   public UpdateEffect<UserView> onEvent(User.UsersEmailChanged evt) {
-    logger.info("User email changed: {}", evt);
+    logger.info("User address changed: {}", evt);
     var updatedView = viewState().withEmail(evt.newEmail());
     return effects().updateState(updatedView);
   }

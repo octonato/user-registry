@@ -7,6 +7,8 @@ Content-Type: application/json
   "country": "Belgium",
   "email": "doe@acme.com"
 }
+### GET user
+GET localhost:9000/users/001
 
 ### Create user 002
 POST localhost:9000/users/002
