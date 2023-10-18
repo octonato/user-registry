@@ -42,3 +42,6 @@ GET localhost:9000/api/emails/john.doe@acme.com
 
 ### get by country
 GET localhost:9000/users/by-country/Belgium
+
+### doe@acme info
+GET localhost:9000/unique-emails/doe@acme.com
