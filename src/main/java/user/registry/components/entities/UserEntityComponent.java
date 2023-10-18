@@ -2,6 +2,7 @@ package user.registry.components.entities;
 
 
 import kalix.javasdk.StatusCode;
+import kalix.javasdk.annotations.Acl;
 import kalix.javasdk.annotations.EventHandler;
 import kalix.javasdk.annotations.Id;
 import kalix.javasdk.annotations.TypeId;
@@ -16,7 +17,7 @@ import user.registry.domain.User;
 @Id("id")
 @TypeId("user")
 @RequestMapping("/users/{id}")
-//@Acl(allow = @Acl.Matcher(service = "*"))
+@Acl(allow = @Acl.Matcher(service = "*"))
 public class UserEntityComponent extends EventSourcedEntity<User, User.Event> {
 
 
