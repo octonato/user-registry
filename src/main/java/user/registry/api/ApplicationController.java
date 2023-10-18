@@ -111,7 +111,7 @@ public class ApplicationController extends Action {
               user.country,
               user.email);
 
-          logger.info("UserInfo {}", userInfo);
+          logger.info("Getting user info: {}", userInfo);
           return userInfo;
         });
 
@@ -131,7 +131,7 @@ public class ApplicationController extends Action {
               email.status().toString(),
               email.owner());
 
-          logger.info("EmailInfo {}", emailInfo);
+          logger.info("Getting email info: {}", emailInfo);
           return emailInfo;
         });
 
