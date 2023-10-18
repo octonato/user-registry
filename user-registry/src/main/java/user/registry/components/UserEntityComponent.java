@@ -1,6 +1,7 @@
 package user.registry.components;
 
 import kalix.javasdk.StatusCode;
+import kalix.javasdk.annotations.Acl;
 import kalix.javasdk.annotations.EventHandler;
 import kalix.javasdk.annotations.Id;
 import kalix.javasdk.annotations.TypeId;
@@ -41,14 +42,30 @@ public class UserEntityComponent extends EventSourcedEntity<User, User.Event> {
       );
   }
 
+  @PutMapping("/change-country")
+  public Effect<Response> changeCountry(@RequestBody User.ChangeCountry cmd) {
+    if (currentState() == null) {
+      return effects().error("User not found", StatusCode.ErrorCode.NOT_FOUND);
+    }
+    return currentState().onCommand(cmd)
+      .fold(
+        error -> effects().error(error),
+        event -> effects().emitEvent(event).thenReply(__ -> Response.done())
+      );
+  }
+
   @EventHandler
-  public User onEvent(User.Created evt) {
+  public User onEvent(User.UserWasCreated evt) {
     return User.onEvent(evt);
   }
 
   @EventHandler
-  public User onEvent(User.EmailChanged evt) {
+  public User onEvent(User.UsersEmailChanged evt) {
     return currentState().onEvent(evt);
   }
 
+  @EventHandler
+  public User onEvent(User.UsersCountryChanged evt) {
+    return currentState().onEvent(evt);
+  }
 }

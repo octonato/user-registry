@@ -1,18 +1,32 @@
 ### Create user
-POST localhost:9000/users/002
+POST localhost:9000/users/001
 Content-Type: application/json
 
 {
   "name": "John Doe",
-  "email": "john@acme.com"
+  "country": "Belgium",
+  "email": "doe@acme.com"
 }
+
+### Create user 002
+POST localhost:9000/users/002
+Content-Type: application/json
+
+{
+  "name": "Alice Doe",
+  "country": "Belgium",
+  "email": "doe@acme.com"
+}
+
+### get by country
+GET localhost:9000/users/by-country/Belgium
 
 ### update email - same email error
 PUT localhost:9000/users/001/change-email
 Content-Type: application/json
 
 {
-  "email": "john@acme.com"
+  "email": "doe@acme.com"
 }
 
 
