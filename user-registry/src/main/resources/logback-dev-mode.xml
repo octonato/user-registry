@@ -5,14 +5,16 @@
 <configuration>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%-5level %class{0} %d{HH:mm:ss.SSS}: \n      %msg%n \n</pattern>
+            <!--<pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>-->
         </encoder>
     </appender>
-
     <logger name="akka" level="WARN"/>
+    <logger name="kalix" level="WARN"/>
+    <logger name="user" level="INFO"/>
 
     <!-- Silence some details from Akka, should not be important to user/SDK dev mode -->
-    <root level="INFO">
+    <root level="WARN">
         <appender-ref ref="STDOUT"/>
     </root>
 

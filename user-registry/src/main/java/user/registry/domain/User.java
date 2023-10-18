@@ -17,13 +17,13 @@ public class User {
 
   // commands
   public record Create(String name, String country, String email) {}
-  public record ChangeEmail(String email) {}
-  public record ChangeCountry(String country) {}
+  public record ChangeEmail(String newEmail) {}
+  public record ChangeCountry(String newCountry) {}
 
   // events
   public sealed interface Event {}
   public record UserWasCreated(String name, String country, String email) implements Event {}
-  public record UsersEmailChanged(String newEmail) implements Event {}
+  public record UsersEmailChanged(String oldEmail, String newEmail) implements Event {}
   public record UsersCountryChanged(String newCountry) implements Event {}
 
   static public Event onCommand(Create cmd) {
@@ -35,10 +35,10 @@ public class User {
   }
 
   public Either<String, Event> onCommand(ChangeCountry cmd) {
-    if(cmd.country().equals(country))
+    if(cmd.newCountry().equals(country))
       return Either.left("Country is the same as the current one");
     else
-      return Either.right(new UsersCountryChanged(cmd.country()));
+      return Either.right(new UsersCountryChanged(cmd.newCountry()));
   }
 
   public User onEvent(UsersCountryChanged evt) {
@@ -46,10 +46,10 @@ public class User {
   }
 
   public Either<String, Event> onCommand(ChangeEmail cmd) {
-     if(cmd.email().equals(email))
+     if(cmd.newEmail().equals(email))
        return Either.left("Email is the same as the current one");
      else
-       return Either.right(new UsersEmailChanged(cmd.email()));
+       return Either.right(new UsersEmailChanged(email, cmd.newEmail()));
   }
 
   public User onEvent(UsersEmailChanged evt) {

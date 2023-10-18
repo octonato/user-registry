@@ -3,6 +3,7 @@ package user.registry.components;
 import org.junit.jupiter.api.Test;
 
 import kalix.javasdk.testkit.EventSourcedTestKit;
+import user.registry.components.entities.UserEntityComponent;
 import user.registry.domain.User;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,7 +15,7 @@ public class UserEntityComponentTest {
   public void testCreationAndUpdate() {
     var userTestKit = EventSourcedTestKit.of(__ -> new UserEntityComponent());
 
-    var creationRes = userTestKit.call(userService -> userService.createUser(new User.Create("John", "john@acme.com")));
+    var creationRes = userTestKit.call(userService -> userService.createUser(new User.Create("John", "Belgium", "john@acme.com")));
 
     var created = creationRes.getNextEventOfType(User.UserWasCreated.class);
     assertEquals("John", created.name());
