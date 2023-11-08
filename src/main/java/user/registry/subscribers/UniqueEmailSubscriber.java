@@ -1,4 +1,4 @@
-package user.registry.listeners;
+package user.registry.subscribers;
 
 
 import kalix.javasdk.action.Action;
@@ -12,13 +12,13 @@ import user.registry.entities.UniqueEmailEntity;
 import java.time.Duration;
 
 @Subscribe.ValueEntity(UniqueEmailEntity.class)
-public class UniqueEmailListener extends Action {
+public class UniqueEmailSubscriber extends Action {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
 
   private final ComponentClient client;
 
-  public UniqueEmailListener(ComponentClient client) {
+  public UniqueEmailSubscriber(ComponentClient client) {
     this.client = client;
   }
 

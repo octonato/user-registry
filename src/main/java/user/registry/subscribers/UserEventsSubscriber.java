@@ -1,4 +1,4 @@
-package user.registry.listeners;
+package user.registry.subscribers;
 
 
 import kalix.javasdk.action.Action;
@@ -11,12 +11,12 @@ import user.registry.entities.UniqueEmailEntity;
 import user.registry.entities.UserEntity;
 
 @Subscribe.EventSourcedEntity(value = UserEntity.class, ignoreUnknown = true)
-public class UserEventsListener extends Action {
+public class UserEventsSubscriber extends Action {
 
   private final ComponentClient client;
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
-  private UserEventsListener(ComponentClient client) {
+  private UserEventsSubscriber(ComponentClient client) {
     this.client = client;
   }
 
