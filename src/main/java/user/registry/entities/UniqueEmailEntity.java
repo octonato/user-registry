@@ -64,10 +64,11 @@ public class UniqueEmailEntity extends ValueEntity<UniqueEmailEntity.UniqueEmail
 
   @PostMapping
   public Effect<Done> reserve(@RequestBody ReserveEmail cmd) {
-    logger.info("Reserving address '{}', current state is '{}'", cmd.address(), currentState());
     if (currentState().isInUse()) {
       return effects().error("Email already reserved");
     }
+
+    logger.info("Reserving address '{}'", cmd.address());
     return effects()
       .updateState(new UniqueEmail(cmd.address, Status.RESERVED, cmd.owner))
       .thenReply(Done.done());
@@ -75,7 +76,6 @@ public class UniqueEmailEntity extends ValueEntity<UniqueEmailEntity.UniqueEmail
 
   @PostMapping("/confirm")
   public Effect<Done> confirm() {
-    logger.info("Confirming address '{}'", currentState().address);
     if (currentState().isUnused()) {
       return effects().error("Email not in use");
     }
@@ -83,27 +83,11 @@ public class UniqueEmailEntity extends ValueEntity<UniqueEmailEntity.UniqueEmail
       logger.info("Email is already confirmed. Ignoring confirmation request.");
       return effects().error("Email already confirmed");
     }
+
+    logger.info("Confirming address '{}'", currentState().address);
     return effects()
       .updateState(currentState().asConfirmed())
       .thenReply(Done.done());
-  }
-
-  @PostMapping("/unReserve")
-  public Effect<Done> unReserve() {
-    logger.info("Un-reserving address '{}'", currentState().address);
-    if (currentState().isUnused()) {
-      logger.info("Email not in use. Ignoring delete request.");
-      return effects().reply(Done.done());
-
-    } else if (currentState().isConfirmed()) {
-      logger.info("Email is confirmed. Ignoring delete request.");
-      return effects().reply(Done.done());
-
-    } else {
-      return effects()
-        .updateState(emptyState())
-        .thenReply(Done.done());
-    }
   }
 
   @DeleteMapping()
@@ -117,9 +101,6 @@ public class UniqueEmailEntity extends ValueEntity<UniqueEmailEntity.UniqueEmail
 
   @GetMapping
   public Effect<UniqueEmail> getState() {
-    if (currentState() == null) {
-      return effects().error("Email not found", StatusCode.ErrorCode.NOT_FOUND);
-    }
     return effects().reply(currentState());
   }
 
