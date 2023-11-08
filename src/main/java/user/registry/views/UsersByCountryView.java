@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import reactor.core.publisher.Flux;
-import user.registry.components.entities.UserEntity;
+import user.registry.entities.UserEntity;
 
 @ViewId("view-users-by-newCountry")
 @Table("users_by_country")

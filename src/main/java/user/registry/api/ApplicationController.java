@@ -8,8 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import user.registry.Done;
-import user.registry.components.entities.UniqueEmailEntity;
-import user.registry.components.entities.UserEntity;
+import user.registry.entities.UniqueEmailEntity;
+import user.registry.entities.UserEntity;
 
 @RequestMapping("/api")
 public class ApplicationController extends Action {

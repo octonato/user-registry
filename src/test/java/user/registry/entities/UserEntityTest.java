@@ -1,9 +1,8 @@
-package user.registry.components;
+package user.registry.entities;
 
 import org.junit.jupiter.api.Test;
 
 import kalix.javasdk.testkit.EventSourcedTestKit;
-import user.registry.components.entities.UserEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

@@ -1,4 +1,4 @@
-package user.registry.components.entities;
+package user.registry.entities;
 
 
 import kalix.javasdk.StatusCode;
