@@ -62,7 +62,7 @@ public class UniqueEmailEntity extends ValueEntity<UniqueEmailEntity.UniqueEmail
   public record ReserveEmail(String address, String owner) {
   }
 
-  @PostMapping
+  @PostMapping("/reserve")
   public Effect<Done> reserve(@RequestBody ReserveEmail cmd) {
     if (currentState().isInUse()) {
       return effects().error("Email already reserved");
