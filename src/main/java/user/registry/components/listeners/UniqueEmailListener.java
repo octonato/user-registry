@@ -1,4 +1,4 @@
-package user.registry.components.actions;
+package user.registry.components.listeners;
 
 
 import kalix.javasdk.action.Action;
@@ -7,11 +7,11 @@ import kalix.javasdk.client.ComponentClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import user.registry.Done;
-import user.registry.components.entities.UniqueEmailComponent;
+import user.registry.components.entities.UniqueEmailEntity;
 
 import java.time.Duration;
 
-@Subscribe.ValueEntity(UniqueEmailComponent.class)
+@Subscribe.ValueEntity(UniqueEmailEntity.class)
 public class UniqueEmailListener extends Action {
 
   private Logger logger = LoggerFactory.getLogger(getClass());
@@ -22,7 +22,7 @@ public class UniqueEmailListener extends Action {
     this.client = client;
   }
 
-  public Effect<Done> onChange(UniqueEmailComponent.UniqueEmail email) {
+  public Effect<Done> onChange(UniqueEmailEntity.UniqueEmail email) {
 
     logger.info("Received update for address '{}'", email);
     var timerId = "timer-" + email.address();
@@ -38,7 +38,7 @@ public class UniqueEmailListener extends Action {
       var callToDelete =
         client
           .forValueEntity(email.address())
-          .call(UniqueEmailComponent::delete);
+          .call(UniqueEmailEntity::delete);
 
       var timer = timers().startSingleTimer(
         timerId,

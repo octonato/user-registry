@@ -8,14 +8,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import user.registry.Done;
-import user.registry.components.entities.UniqueEmailComponent;
-import user.registry.components.entities.UserEntityComponent;
-import user.registry.domain.User;
+import user.registry.components.entities.UniqueEmailEntity;
+import user.registry.components.entities.UserEntity;
 
 @RequestMapping("/api")
 public class ApplicationController extends Action {
 
-  private Logger logger = LoggerFactory.getLogger(getClass());
+  private final Logger logger = LoggerFactory.getLogger(getClass());
   private final ComponentClient client;
 
   public ApplicationController(ComponentClient client) {
@@ -23,15 +22,15 @@ public class ApplicationController extends Action {
   }
 
   @PostMapping("/users/{userId}")
-  public Effect<Done> createUser(@PathVariable String userId, @RequestBody User.Create cmd) {
+  public Effect<Done> createUser(@PathVariable String userId, @RequestBody UserEntity.Create cmd) {
 
-    var createUniqueEmail = new UniqueEmailComponent.ReserveEmail(cmd.email(), userId);
+    var createUniqueEmail = new UniqueEmailEntity.ReserveEmail(cmd.email(), userId);
 
     logger.info("Reserving new address '{}'", cmd.email());
     var emailReserved =
       client
         .forValueEntity(cmd.email())
-        .call(UniqueEmailComponent::reserve)
+        .call(UniqueEmailEntity::reserve)
         .params(createUniqueEmail)
         .execute(); // eager, executing it now
 
@@ -39,7 +38,7 @@ public class ApplicationController extends Action {
     var callToUser =
       client
         .forEventSourcedEntity(userId)
-        .call(UserEntityComponent::createUser)
+        .call(UserEntity::createUser)
         .params(cmd);
 
 
@@ -55,20 +54,19 @@ public class ApplicationController extends Action {
         });
 
     return effects().asyncEffect(userCreated);
-
   }
 
 
   @PutMapping("/users/{userId}/change-email")
-  public Effect<Done> changeEmail(@PathVariable String userId, @RequestBody User.ChangeEmail cmd) {
+  public Effect<Done> changeEmail(@PathVariable String userId, @RequestBody UserEntity.ChangeEmail cmd) {
 
-    var createUniqueEmail = new UniqueEmailComponent.ReserveEmail(cmd.newEmail(), userId);
+    var createUniqueEmail = new UniqueEmailEntity.ReserveEmail(cmd.newEmail(), userId);
 
     logger.info("Reserving new address '{}'", cmd.newEmail());
     var emailReserved =
       client
         .forValueEntity(cmd.newEmail())
-        .call(UniqueEmailComponent::reserve)
+        .call(UniqueEmailEntity::reserve)
         .params(createUniqueEmail)
         .execute(); // eager, executing it now
 
@@ -76,7 +74,7 @@ public class ApplicationController extends Action {
     var callToUser =
       client
         .forEventSourcedEntity(userId)
-        .call(UserEntityComponent::changeEmail)
+        .call(UserEntity::changeEmail)
         .params(cmd);
 
 
@@ -101,15 +99,15 @@ public class ApplicationController extends Action {
 
     var res =
       client.forEventSourcedEntity(userId)
-        .call(UserEntityComponent::getState)
+        .call(UserEntity::getState)
         .execute()
         .thenApply(user -> {
           var userInfo =
             new UserInfo(
               userId,
-              user.name,
-              user.country,
-              user.email);
+              user.name(),
+              user.country(),
+              user.email());
 
           logger.info("Getting user info: {}", userInfo);
           return userInfo;
@@ -122,7 +120,7 @@ public class ApplicationController extends Action {
   public Effect<EmailInfo> getEmailInfo(@PathVariable String address) {
     var res =
       client.forValueEntity(address)
-        .call(UniqueEmailComponent::getState)
+        .call(UniqueEmailEntity::getState)
         .execute()
         .thenApply(email -> {
           var emailInfo =

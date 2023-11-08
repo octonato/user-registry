@@ -33,6 +33,17 @@ Content-Type: application/json
   "email": "doe@acme.com"
 }
 
+
+### create user 003
+POST localhost:9000/api/users/003
+Content-Type: application/json
+
+{
+  "name": "Sophie Doe",
+  "country": "Belgium",
+  "email": "doe@acme.com"
+}
+
 ### doe@acme info
 GET localhost:9000/api/emails/doe@acme.com
 
@@ -43,5 +54,5 @@ GET localhost:9000/api/emails/john.doe@acme.com
 ### get by country
 GET localhost:9000/users/by-country/Belgium
 
-### doe@acme info
+### doe@acme info - forbiden call (ACL blocks it)
 GET localhost:9000/unique-emails/doe@acme.com

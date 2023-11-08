@@ -16,12 +16,12 @@ import user.registry.Done;
 @TypeId("unique-address")
 @RequestMapping("/unique-emails/{id}")
 @Acl(allow = @Acl.Matcher(service = "*"))
-public class UniqueEmailComponent extends ValueEntity<UniqueEmailComponent.UniqueEmail> {
+public class UniqueEmailEntity extends ValueEntity<UniqueEmailEntity.UniqueEmail> {
 
   private final String address;
   private Logger logger = LoggerFactory.getLogger(getClass());
 
-  public UniqueEmailComponent(ValueEntityContext context) {
+  public UniqueEmailEntity(ValueEntityContext context) {
     this.address = context.entityId();
   }
 
