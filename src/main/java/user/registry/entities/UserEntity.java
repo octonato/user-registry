@@ -64,6 +64,10 @@ public class UserEntity extends EventSourcedEntity<UserEntity.User, UserEntity.E
   @PostMapping
   public Effect<Done> createUser(@RequestBody Create cmd) {
 
+    if (cmd.name() == null) {
+      return effects().error("Name is empty", StatusCode.ErrorCode.BAD_REQUEST);
+    }
+
     logger.info("Creating user {}", cmd);
     if (currentState() != null) {
       return effects().error("User already created", StatusCode.ErrorCode.BAD_REQUEST);

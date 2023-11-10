@@ -1,7 +1,6 @@
 package user.registry.entities;
 
 
-import kalix.javasdk.StatusCode;
 import kalix.javasdk.annotations.Acl;
 import kalix.javasdk.annotations.Id;
 import kalix.javasdk.annotations.TypeId;
@@ -33,13 +32,13 @@ public class UniqueEmailEntity extends ValueEntity<UniqueEmailEntity.UniqueEmail
 
   @Override
   public UniqueEmail emptyState() {
-    return new UniqueEmail(address, Status.NOT_USED, null);
+    return new UniqueEmail(address, Status.NOT_USED, "");
   }
 
-  public record UniqueEmail(String address, Status status, String owner) {
+  public record UniqueEmail(String address, Status status, String ownerId) {
 
     public UniqueEmail asConfirmed() {
-      return new UniqueEmail(address, Status.CONFIRMED, owner);
+      return new UniqueEmail(address, Status.CONFIRMED, ownerId);
     }
 
     public boolean isConfirmed() {
@@ -59,35 +58,49 @@ public class UniqueEmailEntity extends ValueEntity<UniqueEmailEntity.UniqueEmail
     }
   }
 
-  public record ReserveEmail(String address, String owner) {
+  public record ReserveEmail(String address, String ownerId) {
   }
 
   @PostMapping("/reserve")
   public Effect<Done> reserve(@RequestBody ReserveEmail cmd) {
-    if (currentState().isInUse()) {
+    if (currentState().isInUse() && !currentState().ownerId.equals(cmd.ownerId)) {
       return effects().error("Email already reserved");
+    }
+
+    if (currentState().ownerId.equals(cmd.ownerId)) {
+      return effects().reply(Done.done());
     }
 
     logger.info("Reserving address '{}'", cmd.address());
     return effects()
-      .updateState(new UniqueEmail(cmd.address, Status.RESERVED, cmd.owner))
+      .updateState(new UniqueEmail(cmd.address, Status.RESERVED, cmd.ownerId))
       .thenReply(Done.done());
   }
 
   @PostMapping("/confirm")
   public Effect<Done> confirm() {
-    if (currentState().isUnused()) {
-      return effects().error("Email not in use");
+    if (currentState().isReserved()) {
+      logger.info("Email is reserved, confirming address '{}'", currentState().address);
+      return effects()
+        .updateState(currentState().asConfirmed())
+        .thenReply(Done.done());
+    } else {
+      logger.info("Email status is not reserved confirmed. Ignoring confirmation request.");
+      return effects().reply(Done.done());
     }
-    if (currentState().isConfirmed()) {
-      logger.info("Email is already confirmed. Ignoring confirmation request.");
-      return effects().error("Email already confirmed");
-    }
+  }
 
-    logger.info("Confirming address '{}'", currentState().address);
-    return effects()
-      .updateState(currentState().asConfirmed())
-      .thenReply(Done.done());
+
+  @PostMapping()
+  public Effect<Done> unReserve() {
+    if (currentState().isReserved()) {
+      logger.info("Un-reserving address '{}'", currentState().address);
+      return effects()
+        .updateState(emptyState())
+        .thenReply(Done.done());
+    } else {
+      return effects().reply(Done.done());
+    }
   }
 
   @DeleteMapping()

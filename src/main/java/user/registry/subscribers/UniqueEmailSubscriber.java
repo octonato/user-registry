@@ -27,18 +27,13 @@ public class UniqueEmailSubscriber extends Action {
     logger.info("Received update for address '{}'", email);
     var timerId = "timer-" + email.address();
 
-    if (email.isConfirmed()) {
-      logger.info("Email is already confirmed, deleting timer (if exists) '{}'", timerId);
-      var cancellation = timers().cancel(timerId);
-      return effects().asyncReply(cancellation.thenApply(__ -> Done.done()));
-
-    } else if (email.isReserved()) {
+     if (email.isReserved()) {
       Duration delay = Duration.ofSeconds(10);
       logger.info("Email is not confirmed, scheduling timer '{}' to fire in '{}'", timerId, delay);
       var callToDelete =
         client
           .forValueEntity(email.address())
-          .call(UniqueEmailEntity::delete);
+          .call(UniqueEmailEntity::unReserve);
 
       var timer = timers().startSingleTimer(
         timerId,
@@ -46,7 +41,13 @@ public class UniqueEmailSubscriber extends Action {
         callToDelete);
 
       return effects().asyncReply(timer.thenApply(__ -> Done.done()));
-    } else {
+
+    } else if (email.isConfirmed()) {
+       logger.info("Email is already confirmed, deleting timer (if exists) '{}'", timerId);
+       var cancellation = timers().cancel(timerId);
+       return effects().asyncReply(cancellation.thenApply(__ -> Done.done()));
+
+     } else {
       // Email is not reserved, so we don't need to do anything
       return effects().reply(Done.done());
     }
